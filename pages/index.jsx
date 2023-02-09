@@ -2,14 +2,13 @@ import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import Link from 'next/link'
 import Button from '../components/button'
+import Image from 'next/image'
 
 import { useSession, getSession, signOut } from 'next-auth/react'
 
-const inter = Inter({ subsets: ['latin'] })
-
 export default function Home() {
 
-  const { data:session } = useSession()
+  const session = useSession()
 
   return (
     <>
@@ -26,32 +25,28 @@ export default function Home() {
 }
 
 const User = ({session}) => {
-  return(
-    <div>
-      <h1 className='text-3xl font-bold underline text-center'>Welcome Back !</h1>
-      <p>{session.user.name}</p>
-      <p>{session.user.email}</p>
-      <Button text="Sign Out" callBack={()=>{signOut()}} />
-    </div>
-  )
-}
 
-// const Guest = () => {
-//   return(
-//     <div>
-//       <h1 className='text-3xl font-bold underline text-center'>Hello !</h1>
-//       <div className='flex flex-col justify-center items-center gap-6'>Do you already have an account?
-//         <div className='flex gap-10'>
-//           <Link href="/login" className='py-2 px-4 bg-black text-white rounded-xl hover:bg-slate-600 hover:drop-shadow-lg hover:-translate-y-2 transition-all'>Click me!</Link>
-//           <Link href="/register" className='py-2 px-4 bg-slate-200 text-black rounded-xl hover:bg-slate-700 hover:text-white hover:drop-shadow-lg hover:-translate-y-2 transition-all'>Sign up Click me!</Link>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
+  if(session.status === "authenticated"){
+    return(
+      <div>
+        <h1 className='text-3xl font-bold underline'>Welcome Back !</h1>
+        <div className='flex my-4'>
+          {session.data.user.image && <Image src={session.data.user.image} width={50} height={50} />}
+          <div className='ml-5'>
+            <p className='text-xs'>name: <span className='text-lg font-bold'>{session.data.user.name}</span></p>
+            <p className='text-xs'>mail: <span className='text-lg font-bold'>{session.data.user.email}</span></p>
+          </div>
+        </div>
+        <Button text="Sign Out" style="ml-auto" callBack={()=>{signOut()}} />
+      </div>
+    )
+  }
+  
+}
 
 export async function getServerSideProps({req}){
   const session = await getSession({req})
+  console.log(session)
 
   if(!session){
     return{

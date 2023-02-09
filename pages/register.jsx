@@ -6,26 +6,37 @@ import Button from "../components/button"
 import Link from "next/link"
 import { useFormik } from "formik"
 import { registerValidate } from "../lib/vaildate"
+import axios from "axios"
+import { useRouter } from "next/router"
 
 import { HiAtSymbol,HiFingerPrint,HiOutlineUser } from 'react-icons/hi';
 
 export default function Register(){
 
+  const router = useRouter();
   const [ showPassword, setShowPassword ] = useState(false)
-
-  const onSubmitHandler = async(value) => {
-    console.log(value)
-  }
 
   const formik = useFormik({
     initialValues:{
-      user:"",
+      name:"",
       email:"",
       password:"",
       cpassword:""
     },
     validate: registerValidate,
-    onSubmit: onSubmitHandler
+    onSubmit: async(value) => {
+      await axios.post("http://localhost:3000/api/auth/signup",value)
+      .then(res => {
+        const { code, message } = res.data;
+        if(code==="0000") router.push("/")
+        else throw new Error(message)
+      })
+      .catch(err => {
+        const { error } = err.response.data;
+        alert(error)
+        throw new Error(error)
+      })
+    }
   })
 
 
@@ -40,11 +51,11 @@ export default function Register(){
         <p className="text-sm py-5 text-gray-400">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam aut?</p>
         <form className="flex flex-col justify-center items-end gap-6" onSubmit={formik.handleSubmit}>
           <div className={style.inputContainer}>
-            <p className={style.validText}>{formik.errors.user && formik.touched.user?formik.errors.user:""} </p>       
+            <p className={style.validText}>{formik.errors.name && formik.touched.name?formik.errors.name:""} </p>       
             <Input 
-              id="user"
-              {...formik.getFieldProps("user")}
-              style={formik.errors.user && formik.touched.user ? style.validInput :""}
+              id="name"
+              {...formik.getFieldProps("name")}
+              style={formik.errors.name && formik.touched.name ? style.validInput :""}
             />
             <span className={style.inputImage}>
               <HiOutlineUser size={20}/>

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { signIn } from 'next-auth/react';
 import { useFormik } from "formik"
 import { loginValidate } from "../lib/vaildate"
+import { useRouter } from "next/router"
 
 import { HiAtSymbol,HiFingerPrint } from 'react-icons/hi';
 import googleImage from '../public/assets/google.svg'
@@ -13,17 +14,23 @@ import githubImage from '../public/assets/github.svg'
 
 export default function Login(){
 
-  const SignInHandler = async(platform) => {
+  const router = useRouter();
+
+  const SignInHandler = async(platform,value) => {
     switch(platform){
       case "google":
         return await signIn("google",{callbackUrl:"http://localhost:3000"})
       case "github":
         return await signIn("github",{callbackUrl:"http://localhost:3000"})
+      case "normal":
+        const status = await signIn("credentials",{
+          redirect: false,
+          email: value.email,
+          password: value.password,
+          callbackUrl: "/"
+        })
+        if(status.ok) router.push(status.url)
     }
-  }
-
-  const onSubmitHandler = async(value) => {
-    console.log(value)
   }
 
   const formik = useFormik({
@@ -32,7 +39,9 @@ export default function Login(){
       password:""
     },
     validate: loginValidate,
-    onSubmit: onSubmitHandler
+    onSubmit: async(_value) => {
+      SignInHandler("normal",_value)
+    }
   })
 
   return(
