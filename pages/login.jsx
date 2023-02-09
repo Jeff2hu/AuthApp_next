@@ -107,7 +107,7 @@ export default function Login(){
             }
           />
         </form>
-        <p className="mt-3">Don't have an account yet?<Link href={"/register"} className="text-sky-600 font-bold ml-2 hover:cursor-pointer">Click Here!</Link></p>
+        <p className="mt-3">Don&#39;t have an account yet?<Link href={"/register"} className="text-sky-600 font-bold ml-2 hover:cursor-pointer">Click Here!</Link></p>
       </div>
 
     </Layout>

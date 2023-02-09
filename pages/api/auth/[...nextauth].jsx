@@ -19,7 +19,7 @@ export default NextAuth({
     CredentialsProvider({
       name:"credentials",
       async authorize(credentials,req){
-        connectMongo().catch(err => res.json({error:"err"}))
+        connectMongo().catch(err => res.json(err))
       
         const result = await Users.findOne({email:credentials.email})
         if(!result){
