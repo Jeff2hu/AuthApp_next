@@ -25,7 +25,7 @@ export default function Register(){
     },
     validate: registerValidate,
     onSubmit: async(value) => {
-      await axios.post("http://auth-app-next.vercel.app/api/auth/signup",value)
+      await axios.post(`${process.env.PROJECT_URL}/api/auth/signup`,value)
       .then(res => {
         const { code, message } = res.data;
         if(code==="0000") router.push("/")

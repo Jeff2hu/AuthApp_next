@@ -19,9 +19,9 @@ export default function Login(){
   const SignInHandler = async(platform,value) => {
     switch(platform){
       case "google":
-        return await signIn("google",{callbackUrl:"http://auth-app-next.vercel.app"})
+        return await signIn("google",{callbackUrl:process.env.PROJECT_URL})
       case "github":
-        return await signIn("github",{callbackUrl:"http://auth-app-next.vercel.app"})
+        return await signIn("github",{callbackUrl:process.env.PROJECT_URL})
       case "normal":
         const status = await signIn("credentials",{
           redirect: false,
